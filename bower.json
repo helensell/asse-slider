@@ -1,0 +1,28 @@
+{
+  "name": "asse-slider",
+  "version": "0.0.1",
+  "homepage": "https://github.com/bzberlin/asse-slider",
+  "authors": [
+    "Thomas Klokosch <thomas.klokosch.extern@bz.de>"
+  ],
+  "description": "Versatile jQuery and iScroll based Slider",
+  "main": "dist/asse-slider.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "slider",
+    "iscroll"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "iscroll": "~5.1.3"
+  }
+}
