@@ -26,13 +26,32 @@ jsFiles = [
 
 # CSS source files (bower)
 cssLibFiles = [
-    bowerPath+'/normalize.css/normalize.css'
+    bowerPath+'/normalize.css/normalize.css',
+    bowerPath+'/fontawesome/css/font-awesome.css'
+]
+
+fontFiles = [
+    bowerPath+'/fontawesome/fonts/fontawesome-webfont.ttf',
+    bowerPath+'/fontawesome/fonts/fontawesome-webfont.eot',
+    bowerPath+'/fontawesome/fonts/fontawesome-webfont.woff',
+    bowerPath+'/fontawesome/fonts/fontawesome-webfont.woff2',
+    bowerPath+'/fontawesome/fonts/fontawesome-webfont.svg'
 ]
 
 
+gulp.task 'copy-fonts', ->
+  gulp.src fontFiles
+    .pipe gulp.dest distPath+'/examples/fonts'
+
+
+gulp.task 'copy-css', ['copy-fonts'], ->
+  gulp.src cssLibFiles
+    .pipe gulp.dest distPath+'/examples/css'
+
+
 # Build CSS from stylus sources
-gulp.task 'build-css', ->
-  gulp.src srcPath+'/css/*.styl'
+gulp.task 'build-css', ['copy-css'], ->
+  gulp.src srcPath+'/examples/css/*.styl'
     .pipe plugins.plumber()
     .pipe plugins.sourcemaps.init()
     .pipe plugins.stylus
@@ -40,7 +59,7 @@ gulp.task 'build-css', ->
     .pipe plugins.autoprefixer
       browsers:['last 10 versions']
     .pipe plugins.sourcemaps.write()
-    .pipe gulp.dest distPath+'/css'
+    .pipe gulp.dest distPath+'/examples/css'
 
 
 # Delete generated css/js files from dist directory
@@ -88,8 +107,8 @@ gulp.task 'jade-tpl', ->
 # Default: Build theme and keep watching for changes
 gulp.task 'default', ['clean'], ->
 
-  gulp.src srcPath+'/css/**/*.styl'
-    .pipe plugins.watch srcPath+'/css/**/*.styl', ->
+  gulp.src srcPath+'/examples/css/**/*.styl'
+    .pipe plugins.watch srcPath+'/examples/css/**/*.styl', ->
       gulp.start 'build-css'
 
   gulp.src srcPath+'/js/*.coffee'

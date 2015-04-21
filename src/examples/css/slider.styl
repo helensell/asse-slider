@@ -5,10 +5,11 @@
 .slider
   position relative
   width 100%
+  height 100%
   overflow hidden
 
   .slideContainer
-    height auto
+    height 100%
 
   .debug
     position absolute
@@ -16,28 +17,31 @@
     left 0
     background rgba(0,0,0,0.6)
     color #fff
-    padding base-margin
+    padding 12px
     font-size 14px
 
     span
-      display: block
+      display block
+      margin 12px 0
 
   ul
     padding 0
     margin 0
+    height 100%
 
     li
       display none
       width 100%
+      height 100%
       float left
       list-style-type none
 
+      background-size cover
+      background-repeat no-repeat
+      background-position center center
+
       &:first-child
         display: block
-
-      &>img
-        width 100%
-        display block
 
   span.prev,
   span.next
@@ -46,6 +50,7 @@
     height 64px
     position absolute
     top 50%
+    margin-top -32px
     left 12px
     cursor pointer
     font-size 64px
@@ -57,8 +62,9 @@
 
   ul.sliderNavigation
     position absolute
-    bottom base-margin
+    bottom 12px
     left 50%
+    height auto
     list-style-type none
     margin 0
     padding 0
@@ -66,11 +72,11 @@
     li
       display inline-block
       width auto
-      padding base-margin
-      margin base-margin
-      background-color green
+      padding 12px
+      margin 0
       cursor pointer
+      color #fff
 
       &.active
-        background-color red
+        color red
 

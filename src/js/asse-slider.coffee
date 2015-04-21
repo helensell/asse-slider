@@ -20,12 +20,12 @@
       autoscroll: false
       speed: 500
       interval: 5000
-      debug: false
+      debug: true
 
       navigation: true
       navigationTemplate: _.template('<ul class="sliderNavigation">
         <% _.each(slides, function(element,index){ %>
-          <li data-index="<%= index %>" class="slider_navigationItem"></li>
+          <li data-index="<%= index %>" class="slider_navigationItem fa fa-circle-o"></li>
         <% }); %>
       </ul>')
 
@@ -35,8 +35,8 @@
 
       prevNextButtons: true
       prevNextButtonsTemplate: _.template('
-                              <span class="prev fa fa-chevron-left"></span>
-                              <span class="next fa fa-chevron-right"></span>')
+                              <span class="prev fa fa-angle-left"></span>
+                              <span class="next fa fa-angle-right"></span>')
 
       slideContainerSelector: '.slideContainer'
       slideSelector: 'ul.slides > li'
@@ -48,6 +48,7 @@
         <span>Current slide: <%= current_slide %></span>
         <span>Autoscroll: <%= autoscroll %></span>
         <span># of navigations: <%= number_of_navigations %></span>
+        <span>Slider width: <%= slider_width %></span>
       </div>')
 
 
@@ -68,8 +69,6 @@
       # Enable slides trough CSS
       @enableSlides()
 
-      @resize()
-
       @iScroll = new IScroll el,
         scrollX: true
         scrollY: false
@@ -88,6 +87,7 @@
       if @options.navigation
         @addNavigation()
 
+      @resize()
       @goToSlide @currentSlide
       @bindEvents()
       @debug()
@@ -170,8 +170,6 @@
       @$slideContainer.width @$slider.width() * @numberOfSlides
       @$slideContainer.height @$slider.height()
 
-      @$slider.height @$slides.first().height()
-
       if @iScroll then @iScroll.refresh()
 
       @startAutoScroll()
@@ -199,10 +197,14 @@
         self.stopAutoScroll()
         self.goToSlide $(@).data('index')
 
-      $(window).bind 'resizeEnd', ->
-        setTimeout ->
-          self.resize()
-        , 0
+      $(window).bind 'resize', ->
+        self.resize()
+        ###
+        if @resizeTo
+          clearTimeout @resizeTimeout
+        @resizeTimeout = setTimeout ->
+        , 200
+        ###
 
 
     # Go to next slide
@@ -265,6 +267,7 @@
           'current_slide': @iScroll.currentPage.pageX
           'autoscroll': if @interval then 'enabled' else 'disabled'
           'number_of_navigations': @$sliderNavigation.length
+          'slider_width': @$slider.width()
 
 
     # Print option to console
