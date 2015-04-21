@@ -1,0 +1,76 @@
+//------------------------------------
+//  Slider
+//------------------------------------
+
+.slider
+  position relative
+  width 100%
+  overflow hidden
+
+  .slideContainer
+    height auto
+
+  .debug
+    position absolute
+    bottom 0
+    left 0
+    background rgba(0,0,0,0.6)
+    color #fff
+    padding base-margin
+    font-size 14px
+
+    span
+      display: block
+
+  ul
+    padding 0
+    margin 0
+
+    li
+      display none
+      width 100%
+      float left
+      list-style-type none
+
+      &:first-child
+        display: block
+
+      &>img
+        width 100%
+        display block
+
+  span.prev,
+  span.next
+    display block
+    width 64px
+    height 64px
+    position absolute
+    top 50%
+    left 12px
+    cursor pointer
+    font-size 64px
+    color #fff
+
+  span.next
+    left auto
+    right 12px
+
+  ul.sliderNavigation
+    position absolute
+    bottom base-margin
+    left 50%
+    list-style-type none
+    margin 0
+    padding 0
+
+    li
+      display inline-block
+      width auto
+      padding base-margin
+      margin base-margin
+      background-color green
+      cursor pointer
+
+      &.active
+        background-color red
+
