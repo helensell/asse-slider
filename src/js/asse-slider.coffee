@@ -170,7 +170,7 @@
       # Fade inactive slides to a specific opacity value
       if @options.inactiveSlideOpacity
 
-        @$slides.animate
+        @$slides.stop().animate
           opacity: '0.5'
 
         @$slides.eq(@currentSlide).stop().animate
