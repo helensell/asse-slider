@@ -1,0 +1,24 @@
+extends ./layouts/base.jade
+
+block title
+  title Fullscreen ASSE Slider Example
+
+block content
+  .slider
+    .slideContainer
+      ul.slides
+        li.slide(style="background-image:url('../../res/nin01.jpg')")
+        li.slide(style="background-image:url('../../res/nin02.jpg')")
+        li.slide(style="background-image:url('../../res/nin03.jpg')")
+        li.slide(style="background-image:url('../../res/nin04.jpg')")
+        li.slide(style="background-image:url('../../res/nin05.jpg')")
+        li.slide(style="background-image:url('../../res/nin06.jpg')")
+        li.slide(style="background-image:url('../../res/nin07.jpg')")
+
+
+  script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
+  script(type="text/javascript",src="../../bower_components/jquery/dist/jquery.js")
+  script(type="text/javascript",src="../../bower_components/iscroll/build/iscroll.js")
+  script(type="text/javascript",src="../js/asse-slider.js")
+  script(type="text/javascript")
+    $('.slider').Slider();

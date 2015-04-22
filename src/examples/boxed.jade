@@ -1,0 +1,41 @@
+extends ./layouts/base.jade
+
+block title
+  title Boxed ASSE Slider Example
+
+block content
+  .wrapper(style="margin:50px auto; width:800px; height:400px;")
+    #first.slider
+      .slideContainer
+        ul.slides
+          li.slide(style="background-image:url('../../res/nin01.jpg')")
+          li.slide(style="background-image:url('../../res/nin02.jpg')")
+          li.slide(style="background-image:url('../../res/nin03.jpg')")
+          li.slide(style="background-image:url('../../res/nin04.jpg')")
+          li.slide(style="background-image:url('../../res/nin05.jpg')")
+          li.slide(style="background-image:url('../../res/nin06.jpg')")
+          li.slide(style="background-image:url('../../res/nin07.jpg')")
+
+    #second.slider(style="margin: 20px auto;")
+      .slideContainer
+        ul.slides
+          li.slide(style="background-image:url('../../res/nin05.jpg')")
+          li.slide(style="background-image:url('../../res/nin06.jpg')")
+          li.slide(style="background-image:url('../../res/nin07.jpg')")
+
+    #third.slider(style="width:500px;height:200px;margin:20px auto;")
+      .slideContainer
+        ul.slides
+          li.slide(style="background-image:url('../../res/nin05.jpg')")
+          li.slide(style="background-image:url('../../res/nin06.jpg')")
+          li.slide(style="background-image:url('../../res/nin07.jpg')")
+
+
+  script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
+  script(type="text/javascript",src="../../bower_components/jquery/dist/jquery.js")
+  script(type="text/javascript",src="../../bower_components/iscroll/build/iscroll.js")
+  script(type="text/javascript",src="../js/asse-slider.js")
+  script(type="text/javascript")
+    $('#first').Slider();
+    $('#second').Slider();
+    $('#third').Slider({speed:200,interval:2000});

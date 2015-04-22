@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Fullscreen ASSE Slider Example</title>
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    <link rel="stylesheet" href="./css/main.css">
+  </head>
+  <body>
+    <div class="slider">
+      <div class="slideContainer">
+        <ul class="slides">
+          <li style="background-image:url('../../res/nin01.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin02.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin03.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin04.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin05.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin06.jpg')" class="slide"></li>
+          <li style="background-image:url('../../res/nin07.jpg')" class="slide"></li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
+    <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../../bower_components/iscroll/build/iscroll.js"></script>
+    <script type="text/javascript" src="../js/asse-slider.js"></script>
+    <script type="text/javascript">$('.slider').Slider();</script>
+  </body>
+</html>
