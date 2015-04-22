@@ -161,6 +161,12 @@
       @debug()
 
 
+    # User touches the screen but scrolling didn't start yet
+    onBeforeScrollStart: =>
+
+      @stopAutoScroll()
+
+
     # Resize slider
     resize: =>
 
@@ -181,6 +187,8 @@
       self = @
 
       @iScroll.on 'scrollEnd', @onScrollEnd
+
+      @iScroll.on 'beforeScrollStart', @onBeforeScrollStart
 
       @$slides.on 'click', 'img', ->
         self.stopAutoScroll()
