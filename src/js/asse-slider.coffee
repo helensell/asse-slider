@@ -21,6 +21,7 @@
       speed: 500
       interval: 5000
       debug: true
+      snap: true
 
       navigation: true
       navigationTemplate: _.template('<ul class="sliderNavigation">
@@ -40,6 +41,15 @@
 
       slideContainerSelector: '.slideContainer'
       slideSelector: 'ul.slides > li'
+
+      # Opacity of slides other than the current
+      # Only applicable if the slider element has overflow: visible
+      # and inactive slides are shown next to the current
+      inactiveSlideOpacity: null
+
+      # Margin left and right of the slides in pixels
+      slideMargin: 0
+
 
     debugTemplate: _.template('
       <div class="debug">
@@ -72,7 +82,7 @@
       @iScroll = new IScroll el,
         scrollX: true
         scrollY: false
-        snap: true
+        snap: @options.snap
         snapSpeed: 400
         tap: true
         momentum: false
@@ -155,10 +165,23 @@
           .eq(index).addClass 'active'
 
 
+    updateSlides: ->
+
+      # Fade inactive slides to a specific opacity value
+      if @options.inactiveSlideOpacity
+
+        @$slides.animate
+          opacity: '0.5'
+
+        @$slides.eq(@currentSlide).stop().animate
+          opacity: '1'
+
+
     # Event callback on scroll end
     onScrollEnd: =>
 
       @currentSlide = @iScroll.currentPage.pageX
+      @updateSlides()
       @updateNavigation()
       @debug()
 
@@ -174,8 +197,8 @@
 
       @stopAutoScroll()
 
-      @$slides.width @$slider.width()
-      @$slideContainer.width @$slider.width() * @numberOfSlides
+      @$slides.width @$slider.outerWidth()
+      @$slideContainer.width (@$slides.outerWidth() + (@options.slideMargin*2)) * @numberOfSlides
       @$slideContainer.height @$slider.height()
 
       if @iScroll then @iScroll.refresh()
@@ -250,6 +273,7 @@
         @iScroll?.goToPage index, 0, @options.speed
         @currentSlide = index
 
+      @updateSlides()
       @updateNavigation()
 
 

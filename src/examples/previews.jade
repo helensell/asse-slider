@@ -1,0 +1,33 @@
+extends ./layouts/base.jade
+
+block title
+  title ASSE Slider Example with slide previews
+
+block content
+  .wrapper(style="margin:50px auto; width:500px; height:300px;")
+    .slider
+      .slideContainer
+        ul.slides
+          li.slide
+            .inner(style="background-image:url('../../res/nin01.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin02.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin03.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin04.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin05.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin06.jpg')")
+          li.slide
+            .inner(style="background-image:url('../../res/nin07.jpg')")
+
+  link(rel="stylesheet",href="./css/previews.css")
+  script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
+  script(type="text/javascript",src="../../bower_components/jquery/dist/jquery.js")
+  script(type="text/javascript",src="../../bower_components/iscroll/build/iscroll.js")
+  script(type="text/javascript",src="../js/asse-slider.js")
+  script(type="text/javascript")
+    $('.slider').Slider({snap:'.inner',inactiveSlideOpacity:'0.3',slideMargin:'6'});
+
