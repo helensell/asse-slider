@@ -158,6 +158,8 @@
     # Event callback on scroll end
     onScrollEnd: =>
 
+      @currentSlide = @iScroll.currentPage.pageX
+      @updateNavigation()
       @debug()
 
 
