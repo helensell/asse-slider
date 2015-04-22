@@ -171,7 +171,7 @@
       if @options.inactiveSlideOpacity
 
         @$slides.stop().animate
-          opacity: '0.5'
+          opacity: @options.inactiveSlideOpacity
 
         @$slides.eq(@currentSlide).stop().animate
           opacity: '1'
