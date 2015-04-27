@@ -50,6 +50,9 @@
       # Margin left and right of the slides in pixels
       slideMargin: 0
 
+      # Width of the slide, defaults to auto, takes a 100% slider width
+      slideWidth: 'auto'
+
 
     debugTemplate: _.template('
       <div class="debug">
@@ -197,11 +200,16 @@
 
       @stopAutoScroll()
 
-      @$slides.width @$slider.outerWidth()
-      @$slideContainer.width (@$slides.outerWidth() + (@options.slideMargin*2)) * @numberOfSlides
+      if @options.slideWidth == 'auto'
+        @$slides.width @$slider.outerWidth()
+      else
+        @$slides.width parseInt(@options.slideWidth) + 'px'
+
+      @$slideContainer.width (@$slides.outerWidth(true) + (@options.slideMargin*2)) * @numberOfSlides
       @$slideContainer.height @$slider.height()
 
-      if @iScroll then @iScroll.refresh()
+      if @iScroll
+        @iScroll.refresh()
 
       @startAutoScroll()
 
