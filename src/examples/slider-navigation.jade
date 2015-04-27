@@ -41,14 +41,15 @@ block content
   script(type="text/javascript",src="../../bower_components/iscroll/build/iscroll.js")
   script(type="text/javascript",src="../js/asse-slider.js")
   script(type="text/javascript").
-      $('.slider-navigation').Slider({
+      var navigation = $('.slider-navigation').Slider({
         slideMargin: '6',
         slideWidth: '250',
         snap: '.inner',
-        navigation: false
+        autoscroll: false,
+        navigation: []
       });
 
       $('.slider-navigationTarget').Slider({
-        navigationElement: $('.slider-navigation').find('ul.slides')
+        navigation: [navigation]
       });
 

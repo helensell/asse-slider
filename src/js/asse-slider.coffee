@@ -15,24 +15,27 @@
     $slider: null
     $slideContainer: null
     $slides: null
+    $sliderNavigation: null
 
     defaults:
-      autoscroll: false
+      autoscroll: true
       speed: 500
       interval: 5000
       debug: true
       snap: true
 
-      navigation: true
-      navigationTemplate: _.template('<ul class="sliderNavigation">
+      # Navigation element array
+      # either 'index' for on-slider navigation, a jQuery selector for a thumbnail
+      # navigation or another slider element for a slider acting as a synced remote
+      # navigation to this slider instance
+      navigation: ['index']
+
+      # Index navigation default template
+      indexNavigationTemplate: _.template('<ul class="sliderNavigation">
         <% _.each(slides, function(element,index){ %>
           <li data-index="<%= index %>" class="slider_navigationItem fa fa-circle-o"></li>
         <% }); %>
       </ul>')
-
-      # If specified, this elements children will receive index values for
-      # the slides and matching click event bindings
-      navigationElement: false
 
       prevNextButtons: true
       prevNextButtonsTemplate: _.template('
@@ -97,13 +100,14 @@
       if @options.prevNextButtons
         @addPrevNextButtons()
 
-      if @options.navigation
-        @addNavigation()
+      if _.size(@options.navigation)
+        @renderNavigation()
 
       @resize()
       @goToSlide @currentSlide
       @bindEvents()
       @debug()
+      @
 
 
     # Enable slides via CSS
@@ -120,39 +124,44 @@
 
 
     # Add navigation
-    addNavigation: ->
+    renderNavigation: ->
 
       self = @
 
-      sliderNavigationLength = @$sliderNavigation.length
+      _.each @options.navigation, (element, index, list)=>
 
-      if @options.navigationElement
+        if element == 'index'
 
-        @$sliderNavigation.push @options.navigationElement
-        navigationItems = @$sliderNavigation[sliderNavigationLength].children()
+          # Create a jQuery object directly from slider code
+          newElement = @options.indexNavigationTemplate({'slides': @$slides})
+          @$sliderNavigation.push $(newElement)
 
-        @$slides.each (index,element)->
-          item = navigationItems.eq(index)
-          if item
-            item.data 'slider_index', self.$slider.data 'index'
-            item.data 'item_index', index
-            item.addClass 'slider_navigationItem'
-            item.click (event)->
-              self.stopAutoScroll()
-              self.goToSlide $(@).data('item_index')
+          # Append it to slider element
+          @$slider.append _.last(@$sliderNavigation)
 
-      else
+          # Resize navigation
+          _.last(@$sliderNavigation).css
+            'margin-left': -(_.last(@$sliderNavigation).width() / 2)
 
-        # Create a jQuery object directly from slider code
-        newElement = @options.navigationTemplate({'slides': @$slides})
-        @$sliderNavigation.push $(newElement)
+        else if element.data('Slider')
 
-        # Append it to slider element
-        @$slider.append @$sliderNavigation[sliderNavigationLength]
+          @$sliderNavigation.push element
 
-        # Resize navigation
-        @$sliderNavigation[sliderNavigationLength].css
-          'margin-left': -@$sliderNavigation[sliderNavigationLength].width() / 2
+        else if element instanceof jQuery
+
+          @$sliderNavigation.push element
+          navigationItems = _.last(@$sliderNavigation).children()
+
+          @$slides.each (index,slide)=>
+            item = navigationItems.eq(index)
+            if item
+              item.data 'slider_index', @$slider.data 'index'
+              item.data 'item_index', index
+              item.addClass 'slider_navigationItem'
+              item.on 'click', (event)->
+                self.stopAutoScroll()
+                self.goToSlide $(@).data('item_index')
+
 
       @updateNavigation()
 
@@ -163,9 +172,17 @@
       index = @currentSlide
 
       _.each @$sliderNavigation, (element)->
-        $(element).find('.slider_navigationItem')
-          .removeClass('active')
-          .eq(index).addClass 'active'
+
+        if element.data('Slider')
+
+          console.log 'sending slider to '+index
+          element.Slider('goToSlide', index)
+
+        else if element instanceof jQuery
+
+          $(element).find('.slider_navigationItem')
+            .removeClass('active')
+            .eq(index).addClass 'active'
 
 
     updateSlides: ->
@@ -211,7 +228,8 @@
       if @iScroll
         @iScroll.refresh()
 
-      @startAutoScroll()
+      if @options.autoscroll
+        @startAutoScroll()
 
 
     # Bind events
@@ -306,7 +324,7 @@
         @$slider.append @debugTemplate
           'slider_index': @$slider.data 'index'
           'number_of_slides': @numberOfSlides
-          'current_slide': @iScroll.currentPage.pageX
+          'current_slide': @iScroll.currentPage?.pageX
           'autoscroll': if @interval then 'enabled' else 'disabled'
           'number_of_navigations': @$sliderNavigation.length
           'slider_width': @$slider.width()
@@ -335,7 +353,7 @@
         @startAutoScroll()
 
       if @options.navigationElement
-        @addNavigation()
+        @renderNavigation()
 
       @debug()
 
