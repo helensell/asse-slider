@@ -56,6 +56,9 @@
       # Width of the slide, defaults to auto, takes a 100% slider width
       slideWidth: 'auto'
 
+      # Slide click callback function
+      onSlideClick: (event)-> console.log 'slide clicked'
+
 
     debugTemplate: _.template('
       <div class="debug">
@@ -147,6 +150,10 @@
 
           @$sliderNavigation.push element
 
+          _.last(@$sliderNavigation).Slider 'onSlideClick', (event)->
+            self.stopAutoScroll()
+            self.goToSlide $(event.currentTarget).index()
+
         else if element instanceof jQuery
 
           @$sliderNavigation.push element
@@ -175,7 +182,7 @@
 
         if element.data('Slider')
 
-          console.log 'sending slider to '+index
+          # Update remote slider
           element.Slider('goToSlide', index)
 
         else if element instanceof jQuery
@@ -183,6 +190,13 @@
           $(element).find('.slider_navigationItem')
             .removeClass('active')
             .eq(index).addClass 'active'
+
+
+    # Add a callback function on slide click
+    onSlideClick: (callback)->
+
+      if typeof callback == 'function'
+        @options.onSlideClick = callback
 
 
     updateSlides: ->
@@ -241,8 +255,10 @@
 
       @iScroll.on 'beforeScrollStart', @onBeforeScrollStart
 
-      @$slides.on 'click', 'img', ->
+      @$slides.on 'tap', (event)->
         self.stopAutoScroll()
+        if typeof self.options.onSlideClick == 'function'
+          self.options.onSlideClick.apply(@, [event])
 
       @$slider.on 'click', 'span.next', ->
         self.stopAutoScroll()
