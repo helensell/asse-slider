@@ -222,6 +222,9 @@
         @$slides.eq(@currentSlide).stop().animate
           opacity: '1'
 
+      @$slides.removeClass 'active'
+      @$slides.eq(@currentSlide).addClass 'active'
+
 
     # Event callback on scroll end
     onScrollEnd: =>
