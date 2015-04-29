@@ -211,6 +211,7 @@
         @options.onSlideClick = callback
 
 
+    # Update slide properties to current slider state
     updateSlides: ->
 
       # Fade inactive slides to a specific opacity value
@@ -221,6 +222,7 @@
       @$slides.eq(@currentSlide).addClass 'active'
 
 
+    # Set slide opacity for active and inactive slides
     setSlideOpacity: (active, inactive)->
 
       @$slides.stop().animate
@@ -388,7 +390,7 @@
         # cache slideMargin CSS on element?
         # what if the user wants to switch back
 
-      if option == 'inactiveSlideOpacity'
+      if option == 'inactiveSlideOpacity' && @options.inactiveSlideOpacity
         @setSlideOpacity 1, @options.inactiveSlideOpacity
 
 
