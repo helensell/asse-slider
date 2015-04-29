@@ -215,15 +215,19 @@
 
       # Fade inactive slides to a specific opacity value
       if @options.inactiveSlideOpacity
-
-        @$slides.stop().animate
-          opacity: @options.inactiveSlideOpacity
-
-        @$slides.eq(@currentSlide).stop().animate
-          opacity: '1'
+        @setSlideOpacity 1, @options.inactiveSlideOpacity
 
       @$slides.removeClass 'active'
       @$slides.eq(@currentSlide).addClass 'active'
+
+
+    setSlideOpacity: (active, inactive)->
+
+      @$slides.stop().animate
+        opacity: inactive
+
+      @$slides.eq(@currentSlide).stop().animate
+        opacity: active
 
 
     # Event callback on scroll end
@@ -372,18 +376,26 @@
 
     # Set option to this instances options array
     set: (option, value) ->
-      console.log 'setting '+option+' to '+value
       @options[option] = value
       @updateSettings()
+
+      # If no interval is currently present, start autoscroll
+      if option == 'autoscroll' && !@interval
+        @startAutoScroll()
+
+      # TODO: Update slide margin
+      #if option == 'slideMargin'
+        # cache slideMargin CSS on element?
+        # what if the user wants to switch back
+
+      if option == 'inactiveSlideOpacity'
+        @setSlideOpacity 1, @options.inactiveSlideOpacity
 
 
     # Update slider settings from options
     updateSettings: ->
 
-      if @options.autoscroll && !@interval
-        @startAutoScroll()
-
-      if @options.navigationElement
+      if @options.navigation
         @renderNavigation()
 
       @debug()
