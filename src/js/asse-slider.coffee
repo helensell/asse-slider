@@ -24,6 +24,11 @@
       debug: true
       snap: true
 
+      # In this state, the slider instance should never forward events to
+      # the iScroll component, e.g. when the slider is not visible (display:none)
+      # and therefore iScroll can't get/scroll the slide elements
+      disabled: false
+
       # Navigation element array
       # either 'index' for on-slider navigation, a jQuery selector for a thumbnail
       # navigation or another slider element for a slider acting as a synced remote
@@ -143,6 +148,11 @@
 
       self = @
 
+      # Delete old slider navigation elements
+      _.each @$sliderNavigation, (element, index)->
+        if !element.data('Slider')
+          $(element).remove()
+
       _.each @options.navigation, (element, index, list)=>
 
         if element == 'index'
@@ -190,18 +200,20 @@
 
       index = @currentSlide
 
-      _.each @$sliderNavigation, (element)->
+      if !@options.disabled
 
-        if element.data('Slider')
+        _.each @$sliderNavigation, (element)->
 
-          # Update remote slider
-          element.Slider('goToSlide', index)
+          if element.data 'Slider'
 
-        else if element instanceof jQuery
+            # Update remote slider
+            element.Slider 'goToSlide', index
 
-          $(element).find('.slider_navigationItem')
-            .removeClass('active')
-            .eq(index).addClass 'active'
+          else if element instanceof jQuery
+
+            $(element).find('.slider_navigationItem')
+              .removeClass('active')
+              .eq(index).addClass 'active'
 
 
     # Add a callback function on slide click
