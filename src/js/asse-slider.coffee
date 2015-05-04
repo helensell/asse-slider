@@ -378,8 +378,9 @@
 
     # Set option to this instances options array
     set: (option, value) ->
+
+      # Set options value
       @options[option] = value
-      @updateSettings()
 
       # If no interval is currently present, start autoscroll
       if option == 'autoscroll' && !@interval
@@ -393,11 +394,7 @@
       if option == 'inactiveSlideOpacity' && @options.inactiveSlideOpacity
         @setSlideOpacity 1, @options.inactiveSlideOpacity
 
-
-    # Update slider settings from options
-    updateSettings: ->
-
-      if @options.navigation
+      if option == 'navigation'
         @renderNavigation()
 
       @debug()
