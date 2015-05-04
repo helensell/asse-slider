@@ -332,12 +332,12 @@
     # Go to slide index
     goToSlide: (index)=>
 
-      if @currentSlide != index
+      if @currentSlide != index && index < @numberOfSlides
         @iScroll?.goToPage index, 0, @options.speed
         @currentSlide = index
 
-      @updateSlides()
-      @updateNavigation()
+        @updateSlides()
+        @updateNavigation()
 
 
     # Start autoscroll
