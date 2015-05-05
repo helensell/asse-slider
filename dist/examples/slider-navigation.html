@@ -22,8 +22,8 @@
         </div>
       </div>
     </div>
-    <div style="margin:50px auto; width:800px; height:200px;" class="wrapper">
-      <div class="slider slider-navigation">
+    <div style="margin:50px auto; width:800px; height:0px; overflow:hidden;" class="navigation-wrapper">
+      <div style="height: 200px;" class="slider slider-navigation">
         <div class="slideContainer">
           <ul class="slides">
             <li class="slide">
@@ -51,6 +51,13 @@
         </div>
       </div>
     </div>
+    <div style="margin:50px auto; width:800px; height:400px;" class="wrapper">
+      <button id="hide-navigation">Show navigation</button>
+      <p>This example shows using a second slider as a navigation element.
+        <It>'s initialized hidden, which was particularly tricky to implement with iScroll,</It>
+        <since>hidden iScroll elements initialize with zero slides.</since>
+      </p>
+    </div>
     <link rel="stylesheet" href="./css/slider-navigation.css">
     <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
     <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
@@ -69,6 +76,12 @@
       $('.slider-navigationTarget').Slider({
         navigation: [navigation]
       });
+      
+      $('#hide-navigation').click(
+        function(){
+          $('.navigation-wrapper').css('height','200px');
+        }
+      );
     </script>
   </body>
 </html>
