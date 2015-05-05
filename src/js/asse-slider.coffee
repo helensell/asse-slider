@@ -64,7 +64,13 @@
 
       # Slide click callback function
       onSlideClick: (event)->
-        console.log $(event.currentTarget).index()
+        #console.log $(event.currentTarget).index()
+
+      onNextClick: (event)->
+        #console.log 'Next'
+
+      onPrevClick: (event)->
+        #console.log 'Prev'
 
 
     debugTemplate: _.template('
@@ -221,13 +227,6 @@
               .eq(index).addClass 'active'
 
 
-    # Add a callback function on slide click
-    onSlideClick: (callback)->
-
-      if typeof callback == 'function'
-        @options.onSlideClick = callback
-
-
     # Update slide properties to current slider state
     updateSlides: ->
 
@@ -252,6 +251,8 @@
     # Event callback on scroll end
     onScrollEnd: =>
 
+      self = @
+
       # If Slider shows more than one slide per page
       # we need to check if the currentSlide is actually
       # higher than the one snapped to, otherwise the
@@ -260,6 +261,12 @@
       # element
       if @currentSlide < @iScroll.currentPage.pageX
         @currentSlide = @iScroll.currentPage.pageX
+
+      _.each @$sliderListeners, (listener)->
+
+        # Update remote slider
+        listener.Slider 'stopAutoScroll'
+        listener.Slider 'goToSlide', self.currentSlide
 
       @updateSlides()
       @updateNavigation()
@@ -320,17 +327,23 @@
       @$slides.on 'tap', (event)->
         self.stopAutoScroll()
         if typeof self.options.onSlideClick == 'function'
-          self.options.onSlideClick.apply(@, [event])
+          self.options.onSlideClick.apply(@, [event,self])
 
       @$slider.on 'click', 'span.next', (event)->
         event.stopPropagation()
         self.stopAutoScroll()
         self.nextSlide()
 
+        if typeof self.options.onNextClick == 'function'
+          self.options.onNextClick.apply(@, [event,self])
+
       @$slider.on 'click', 'span.prev', (event)->
         event.stopPropagation()
         self.stopAutoScroll()
         self.prevSlide()
+
+        if typeof self.options.onPrevClick == 'function'
+          self.options.onPrevClick.apply(@, [event,self])
 
       @$slider.on 'click', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
