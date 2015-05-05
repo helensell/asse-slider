@@ -58,7 +58,8 @@ block content
     });
 
     var mainSlider = $('.slider-navigationTarget').Slider({
-      navigation: ['index',navigation]
+      navigation: ['index',navigation],
+      fakeCarousel: true
     });
 
     navigation.Slider('set', 'onSlideClick', function(event,slider){
