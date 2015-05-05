@@ -16,6 +16,7 @@
     $slideContainer: null
     $slides: null
     $sliderNavigation: null
+    $sliderListeners: null
 
     defaults:
       autoscroll: true
@@ -62,7 +63,8 @@
       slideWidth: 'auto'
 
       # Slide click callback function
-      onSlideClick: (event)-> console.log 'slide clicked'
+      onSlideClick: (event)->
+        console.log $(event.currentTarget).index()
 
 
     debugTemplate: _.template('
@@ -79,12 +81,18 @@
     # Constructor
     constructor: (el, options, index = null) ->
 
+      self = @
+
       @options = $.extend({}, @defaults, options)
 
       @$slider = $(el)
       @$slider.data 'index', index
       @$slider.addClass 'slider_'+index
       @$sliderNavigation = []
+      @$sliderListeners = []
+
+      @options.onSlideClick = (event)->
+        self.goToSlide $(event.currentTarget).index()
 
       @$slideContainer = @$slider.find @options.slideContainerSelector
       @$slides = @$slideContainer.find @options.slideSelector
@@ -170,11 +178,7 @@
 
         else if element.data('Slider')
 
-          @$sliderNavigation.push element
-
-          _.last(@$sliderNavigation).Slider 'onSlideClick', (event)->
-            self.stopAutoScroll()
-            self.goToSlide $(event.currentTarget).index()
+          self.registerListener element
 
         else if element instanceof jQuery
 
@@ -195,6 +199,12 @@
       @updateNavigation()
 
 
+    # Register listener
+    registerListener: (listener)->
+
+      @$sliderListeners.push listener
+
+
     # Update navigation status
     updateNavigation: ->
 
@@ -204,12 +214,7 @@
 
         _.each @$sliderNavigation, (element)->
 
-          if element.data 'Slider'
-
-            # Update remote slider
-            element.Slider 'goToSlide', index
-
-          else if element instanceof jQuery
+          if element instanceof jQuery
 
             $(element).find('.slider_navigationItem')
               .removeClass('active')
@@ -348,8 +353,14 @@
         @iScroll?.goToPage index, 0, @options.speed
         @currentSlide = index
 
-        @updateSlides()
-        @updateNavigation()
+      @updateSlides()
+      @updateNavigation()
+
+      _.each @$sliderListeners, (listener)->
+
+        # Update remote slider
+        listener.Slider 'stopAutoScroll'
+        listener.Slider 'goToSlide', index
 
 
     # Start autoscroll

@@ -16,8 +16,8 @@ block content
           li.slide(style="background-image:url('../../res/nin06.jpg')")
           li.slide(style="background-image:url('../../res/nin07.jpg')")
 
-  .wrapper(style="margin:50px auto; width:800px; height:200px;")
-    .slider.slider-navigation
+  .navigation-wrapper(style="margin:50px auto; width:800px; height:0px; overflow:hidden;")
+    .slider.slider-navigation(style="height: 200px;")
       .slideContainer
         ul.slides
           li.slide
@@ -35,6 +35,12 @@ block content
           li.slide
             .inner(style="background-image:url('../../res/nin07.jpg')")
 
+  .wrapper(style="margin:50px auto; width:800px; height:400px;")
+    button#hide-navigation Show navigation
+    p This example shows using a second slider as a navigation element.
+      It's initialized hidden, which was particularly tricky to implement with iScroll,
+      since hidden iScroll elements initialize with zero slides.
+
   link(rel="stylesheet",href="./css/slider-navigation.css")
   script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
   script(type="text/javascript",src="../../bower_components/jquery/dist/jquery.js")
@@ -50,7 +56,19 @@ block content
         inactiveSlideOpacity: '0.3'
       });
 
-      $('.slider-navigationTarget').Slider({
+      var slider = $('.slider-navigationTarget').Slider({
         navigation: [navigation]
       });
+
+      navigation.Slider('set', 'onSlideClick',function(event){
+        slider.Slider('stopAutoScroll');
+        slider.Slider('goToSlide',$(event.currentTarget).index());
+      });
+
+
+      $('#hide-navigation').click(
+        function(){
+          $('.navigation-wrapper').css('height','200px');
+        }
+      );
 
