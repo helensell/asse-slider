@@ -40,7 +40,7 @@
       # Index navigation default template
       indexNavigationTemplate: _.template('<ul class="sliderNavigation">
         <% _.each(slides, function(element,index){ %>
-          <% if((index!=0 && index!=slides.length-1) || !fakeCarousel){ %>
+          <% if(!carousel || (index>=carousel && (index+1)<=slides.length-carousel)){ %>
             <li data-index="<%= index %>" class="slider_navigationItem fa fa-circle-o"></li>
           <% } %>
         <% }); %>
@@ -67,7 +67,8 @@
 
       # Fake a carousel effect by showing the last slide next to the first
       # that can't be navigated to but forwards to the end of the slider
-      fakeCarousel: false
+      # Number indicates number of slides padding left and right
+      carousel: 0
 
       # Slide click callback function
       onSlideClick: (event)->
@@ -111,10 +112,10 @@
       @$slideContainer = @$slider.find @options.slideContainerSelector
       @refreshSlides()
 
-      if @options.fakeCarousel
+      if @options.carousel
         @addCarouselSlides()
         @refreshSlides()
-        @currentSlide = 1
+        @currentSlide = @options.carousel
 
       # Enable slides trough CSS
       @enableSlides()
@@ -191,7 +192,7 @@
         if element == 'index'
 
           # Create a jQuery object directly from slider code
-          newElement = @options.indexNavigationTemplate({'slides': @$slides, 'fakeCarousel': @options.fakeCarousel})
+          newElement = @options.indexNavigationTemplate({'slides': @$slides, 'carousel': @options.carousel})
           @$sliderNavigation.push $(newElement)
 
           # Append it to slider element
@@ -280,13 +281,13 @@
       else
         @currentSlide = @iScroll.currentPage.pageX
 
-      if @options.fakeCarousel
+      if @options.carousel
         # If last slide, return to first
-        if @currentSlide+1 == @numberOfSlides
-          @goToSlide 1, false
+        if @currentSlide+@options.carousel >= @numberOfSlides
+          @goToSlide @options.carousel, false
         # If first slide, move to last
-        else if @currentSlide == 0
-          @goToSlide @numberOfSlides - 2, false
+        else if @currentSlide < @options.carousel
+          @goToSlide @numberOfSlides - (@options.carousel+1), false
 
       _.each @$sliderListeners, (listener)->
 
@@ -420,22 +421,6 @@
     # Go to slide index
     goToSlide: (index, animate=true)=>
 
-      # Check fakeCarousel slides
-      if @options.fakeCarousel && (index+1) == @numberOfSlides
-
-        # This is the last slide in a fake carousel, this
-        # means we have to forward the user to slide zero
-        index = 1
-        animate = false
-
-      else if @options.fakeCarousel && index == 0
-
-        # This is the first slide in a fakeCarousel
-        # it forwards to the last actual slide, which is
-        # the one before the last (fake) slide
-        index = @numberOfSlides-2
-        animate = false
-
       if animate
         @iScroll?.goToPage index, 0, @options.speed
       else
@@ -457,11 +442,11 @@
     # Add fake carousel slides
     addCarouselSlides: ->
 
-      @$startElement = @$slides.last().clone()
-      @$endElement = @$slides.first().clone()
+      @$startElements = @$slides.slice(-@options.carousel).clone()
+      @$endElements = @$slides.slice(0,@options.carousel).clone()
 
-      @$slides.parent().prepend @$startElement
-      @$slides.parent().append @$endElement
+      @$slides.parent().prepend @$startElements
+      @$slides.parent().append @$endElements
 
 
     # Start autoscroll
