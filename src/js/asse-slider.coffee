@@ -251,6 +251,8 @@
     # Event callback on scroll end
     onScrollEnd: =>
 
+      self = @
+
       # If Slider shows more than one slide per page
       # we need to check if the currentSlide is actually
       # higher than the one snapped to, otherwise the
@@ -259,6 +261,12 @@
       # element
       if @currentSlide < @iScroll.currentPage.pageX
         @currentSlide = @iScroll.currentPage.pageX
+
+      _.each @$sliderListeners, (listener)->
+
+        # Update remote slider
+        listener.Slider 'stopAutoScroll'
+        listener.Slider 'goToSlide', self.currentSlide
 
       @updateSlides()
       @updateNavigation()
