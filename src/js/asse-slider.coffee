@@ -247,24 +247,33 @@
 
 
     # Update slide properties to current slider state
-    updateSlides: ->
+    updateSlides: (animate=true)->
 
       # Fade inactive slides to a specific opacity value
-      if @options.inactiveSlideOpacity
-        @setSlideOpacity 1, @options.inactiveSlideOpacity
+      if @options.inactiveSlideOpacity && animate
+        @setSlideOpacity 1, @options.inactiveSlideOpacity, true
+      else
+        @setSlideOpacity 1, @options.inactiveSlideOpacity, false
 
       @$slides.removeClass 'active'
       @$slides.eq(@currentSlide).addClass 'active'
 
 
     # Set slide opacity for active and inactive slides
-    setSlideOpacity: (active, inactive)->
+    setSlideOpacity: (active, inactive, animate=true)->
 
-      @$slides.stop().animate
-        opacity: inactive
+      if animate
+        @$slides.stop().animate
+          opacity: inactive
 
-      @$slides.eq(@currentSlide).stop().animate
-        opacity: active
+        @$slides.eq(@currentSlide).stop().animate
+          opacity: active
+      else
+        @$slides.stop().css
+          opacity: inactive
+
+        @$slides.eq(@currentSlide).stop().css
+          opacity: active
 
 
     # Event callback on scroll end
@@ -283,7 +292,7 @@
 
       if @options.carousel
         # If last slide, return to first
-        if @currentSlide+@options.carousel >= @numberOfSlides
+        if @currentSlide >= @numberOfSlides-@options.carousel
           @goToSlide @options.carousel, false
         # If first slide, move to last
         else if @currentSlide < @options.carousel
@@ -427,7 +436,7 @@
         @iScroll?.goToPage index, 0, 0
 
       @currentSlide = index
-      @updateSlides()
+      @updateSlides(animate)
       @updateNavigation()
 
       _.each @$sliderListeners, (listener)->
