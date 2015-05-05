@@ -252,7 +252,15 @@
     # Event callback on scroll end
     onScrollEnd: =>
 
-      @currentSlide = @iScroll.currentPage.pageX
+      # If Slider shows more than one slide per page
+      # we need to check if the currentSlide is actually
+      # higher than the one snapped to, otherwise the
+      # prev/next arrow navigation won't be able to navigate
+      # to elements on the last slide other than the snapping
+      # element
+      if @currentSlide < @iScroll.currentPage.pageX
+        @currentSlide = @iScroll.currentPage.pageX
+
       @updateSlides()
       @updateNavigation()
       @debug()
@@ -274,7 +282,23 @@
       else
         @$slides.width parseInt(@options.slideWidth) + 'px'
 
-      @$slideContainer.width (@$slides.outerWidth(true) + (@options.slideMargin*2)) * @numberOfSlides
+      # Calculate container width
+      # A possible margin left and right of the elements makes this
+      # a little more tricky than it seems, we do not only need to
+      # multiply all elements + their respective side margins left and
+      # right, we also have to take into account that the first and last
+      # element might have a different margin towards the beginning and
+      # end of the slide container
+      containerWidth = (@$slides.outerWidth() + (@options.slideMargin * 2)) * @numberOfSlides
+
+      # Remove last and first element border margins
+      containerWidth -= @options.slideMargin * 2
+
+      # Add whatever margin these two elements have
+      containerWidth += parseFloat @$slides.first().css('margin-left')
+      containerWidth += parseFloat @$slides.last().css('margin-right')
+
+      @$slideContainer.width containerWidth
       @$slideContainer.height @$slider.height()
 
       if @iScroll
@@ -298,11 +322,13 @@
         if typeof self.options.onSlideClick == 'function'
           self.options.onSlideClick.apply(@, [event])
 
-      @$slider.on 'click', 'span.next', ->
+      @$slider.on 'click', 'span.next', (event)->
+        event.stopPropagation()
         self.stopAutoScroll()
         self.nextSlide()
 
-      @$slider.on 'click', 'span.prev', ->
+      @$slider.on 'click', 'span.prev', (event)->
+        event.stopPropagation()
         self.stopAutoScroll()
         self.prevSlide()
 
@@ -325,8 +351,8 @@
 
       self = @
 
-      if @numberOfSlides > @currentSlide + 1
-        nextSlideIndex = @currentSlide+1
+      if @numberOfSlides > (@currentSlide+1)
+        nextSlideIndex = (@currentSlide+1)
       else
         nextSlideIndex = 0
 
@@ -361,6 +387,8 @@
         # Update remote slider
         listener.Slider 'stopAutoScroll'
         listener.Slider 'goToSlide', index
+
+      @debug()
 
 
     # Start autoscroll
