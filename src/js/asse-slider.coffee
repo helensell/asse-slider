@@ -17,6 +17,7 @@
     $slides: null
     $sliderNavigation: null
     $sliderListeners: null
+    $slidesInContainer: null
 
     defaults:
       autoscroll: true
@@ -96,6 +97,7 @@
       @$slider.addClass 'slider_'+index
       @$sliderNavigation = []
       @$sliderListeners = []
+      @$slidesInContainer = null
 
       @options.onSlideClick = (event)->
         self.goToSlide $(event.currentTarget).index()
@@ -254,13 +256,13 @@
       self = @
 
       # If Slider shows more than one slide per page
-      # we need to check if the currentSlide is actually
-      # higher than the one snapped to, otherwise the
-      # prev/next arrow navigation won't be able to navigate
-      # to elements on the last slide other than the snapping
-      # element
-      if @currentSlide < @iScroll.currentPage.pageX
-        @currentSlide = @iScroll.currentPage.pageX
+      # we need to check if the currentSlide is on the
+      # last page and higher than the one snapped to
+      if @slidesInContainer > 1
+        if @iScroll.currentPage.pageX < @numberOfSlides - @slidesInContainer
+          @currentSlide = @iScroll.currentPage.pageX
+      else
+          @currentSlide = @iScroll.currentPage.pageX
 
       _.each @$sliderListeners, (listener)->
 
@@ -296,7 +298,8 @@
       # right, we also have to take into account that the first and last
       # element might have a different margin towards the beginning and
       # end of the slide container
-      containerWidth = (@$slides.outerWidth() + (@options.slideMargin * 2)) * @numberOfSlides
+      slideWidth = (@$slides.outerWidth() + (@options.slideMargin * 2))
+      containerWidth =  slideWidth * @numberOfSlides
 
       # Remove last and first element border margins
       containerWidth -= @options.slideMargin * 2
@@ -304,6 +307,11 @@
       # Add whatever margin these two elements have
       containerWidth += parseFloat @$slides.first().css('margin-left')
       containerWidth += parseFloat @$slides.last().css('margin-right')
+
+      # Determine the amount of slides that can fit inside the slide container
+      # We need this for the onScrollEnd event, to check if the current slide
+      # is already on the last page
+      @slidesInContainer = Math.ceil @$slider.width() / slideWidth
 
       @$slideContainer.width containerWidth
       @$slideContainer.height @$slider.height()
