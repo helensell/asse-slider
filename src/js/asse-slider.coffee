@@ -244,7 +244,7 @@
 
             $(element).find('.slider_navigationItem')
               .removeClass('active')
-              .filter ()-> $(@).data('item_index') == index+parseInt(self.options.carousel)
+              .filter ()-> $(@).data('item_index') == index
               .addClass 'active'
 
 
