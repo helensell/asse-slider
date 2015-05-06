@@ -302,7 +302,7 @@
 
         # Update remote slider
         listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', self.currentSlide
+        listener.Slider 'goToSlide', self.currentSlide - self.options.carousel
 
       @updateSlides()
       @updateNavigation()
@@ -430,6 +430,8 @@
     # Go to slide index
     goToSlide: (index, animate=true)=>
 
+      self = @
+
       if animate
         @iScroll?.goToPage index, 0, @options.speed
       else
@@ -443,7 +445,7 @@
 
         # Update remote slider
         listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', index
+        listener.Slider 'goToSlide', index - self.options.carousel
 
       @debug()
 
