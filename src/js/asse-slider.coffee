@@ -374,7 +374,7 @@
         if typeof self.options.onSlideClick == 'function'
           self.options.onSlideClick.apply(@, [event,self])
 
-      @$slider.on 'click', 'span.next', (event)->
+      @$slider.on 'tap', 'span.next', (event)->
         event.stopPropagation()
         self.stopAutoScroll()
         self.nextSlide()
@@ -382,7 +382,7 @@
         if typeof self.options.onNextClick == 'function'
           self.options.onNextClick.apply(@, [event,self])
 
-      @$slider.on 'click', 'span.prev', (event)->
+      @$slider.on 'tap', 'span.prev', (event)->
         event.stopPropagation()
         self.stopAutoScroll()
         self.prevSlide()
@@ -390,7 +390,7 @@
         if typeof self.options.onPrevClick == 'function'
           self.options.onPrevClick.apply(@, [event,self])
 
-      @$slider.on 'click', 'ul.sliderNavigation li', ->
+      @$slider.on 'tap', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
         self.goToSlide $(@).data('item_index')
 
