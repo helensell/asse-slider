@@ -127,7 +127,8 @@
         snapSpeed: 400
         tap: true
         momentum: false
-        eventPassthrough: false
+        eventPassthrough: true
+        preventDefault: false
         onBeforeScrollStart: (e)->
           point = e.touches[0]
           pointStartX = point.pageX
