@@ -81,17 +81,17 @@
       
       navigation.Slider('set', 'onSlideClick', function(event,slider){
         mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',$(event.currentTarget).index());
+        mainSlider.Slider('goToSlide',$(event.currentTarget).index()+2);
       });
       
       navigation.Slider('set', 'onNextClick', function(event,slider){
         mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',slider.currentSlide);
+        mainSlider.Slider('goToSlide',slider.currentSlide+2);
       });
       
       navigation.Slider('set', 'onPrevClick', function(event,slider){
         mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',slider.currentSlide);
+        mainSlider.Slider('goToSlide',slider.currentSlide+2);
       });
       
       $('#hide-navigation').click(

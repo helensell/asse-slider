@@ -41,7 +41,7 @@
       indexNavigationTemplate: _.template('<ul class="sliderNavigation">
         <% _.each(slides, function(element,index){ %>
           <% if(!carousel || (index>=carousel && (index+1)<=slides.length-carousel)){ %>
-            <li data-index="<%= index %>" class="slider_navigationItem fa fa-circle-o"></li>
+            <li data-item_index="<%= index %>" class="slider_navigationItem fa fa-circle-o"></li>
           <% } %>
         <% }); %>
       </ul>')
@@ -215,7 +215,7 @@
             item = navigationItems.eq(index)
             if item
               item.data 'slider_index', @$slider.data 'index'
-              item.data 'item_index', index
+              item.data 'item_index', index+parseInt(self.options.carousel)
               item.addClass 'slider_navigationItem'
               item.on 'click', (event)->
                 self.stopAutoScroll()
@@ -233,6 +233,7 @@
     # Update navigation status
     updateNavigation: ->
 
+      self = @
       index = @currentSlide
 
       if !@options.disabled
@@ -243,7 +244,8 @@
 
             $(element).find('.slider_navigationItem')
               .removeClass('active')
-              .filter('[data-index='+index+']').addClass 'active'
+              .filter ()-> $(@).data('item_index') == index+parseInt(self.options.carousel)
+              .addClass 'active'
 
 
     # Update slide properties to current slider state
@@ -389,7 +391,7 @@
 
       @$slider.on 'click', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
-        self.goToSlide $(@).data('index')
+        self.goToSlide $(@).data('item_index')+parseInt(self.options.carousel)
 
       $(window).bind 'resize', ->
         self.resize()
