@@ -391,7 +391,7 @@
 
       @$slider.on 'click', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
-        self.goToSlide $(@).data('item_index')+parseInt(self.options.carousel)
+        self.goToSlide $(@).data('item_index')
 
       $(window).bind 'resize', ->
         self.resize()
