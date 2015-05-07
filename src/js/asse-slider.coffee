@@ -129,18 +129,6 @@
         momentum: false
         eventPassthrough: true
         preventDefault: false
-        onBeforeScrollStart: (e)->
-          point = e.touches[0]
-          pointStartX = point.pageX
-          pointStartY = point.pageY
-          null
-        onBeforeScrollMove: (e)->
-          deltaX = Math.abs(point.pageX - pointStartX)
-          deltaY = Math.abs(point.pageY - pointStartY)
-          if deltaX >= deltaY
-            e.preventDefault()
-          else
-            null
 
       if @options.autoscroll
         @startAutoScroll()
