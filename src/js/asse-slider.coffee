@@ -386,12 +386,6 @@
 
       $(window).bind 'resize', ->
         self.resize()
-        ###
-        if @resizeTo
-          clearTimeout @resizeTimeout
-        @resizeTimeout = setTimeout ->
-        , 200
-        ###
 
 
     # Go to next slide
