@@ -133,8 +133,7 @@
       if @options.autoscroll
         @startAutoScroll()
 
-      if @options.prevNextButtons
-        @addPrevNextButtons()
+      @addPrevNextButtons()
 
       if _.size(@options.navigation)
         @renderNavigation()
@@ -163,7 +162,28 @@
     # Add prev next buttons
     addPrevNextButtons: ->
 
-      @$slider.append @options.prevNextButtonsTemplate()
+      self = @
+
+      if @options.prevNextButtons
+
+        @$slider.append @options.prevNextButtonsTemplate()
+
+        @$slider.on 'tap', 'span.next', (event)->
+          event.stopPropagation()
+          self.stopAutoScroll()
+          self.nextSlide()
+
+          if typeof self.options.onNextClick == 'function'
+            self.options.onNextClick.apply(@, [event,self])
+
+        @$slider.on 'tap', 'span.prev', (event)->
+          event.stopPropagation()
+          self.stopAutoScroll()
+          self.prevSlide()
+
+          if typeof self.options.onPrevClick == 'function'
+            self.options.onPrevClick.apply(@, [event,self])
+
 
 
     # Add navigation
@@ -363,22 +383,6 @@
         self.stopAutoScroll()
         if typeof self.options.onSlideClick == 'function'
           self.options.onSlideClick.apply(@, [event,self])
-
-      @$slider.on 'tap', 'span.next', (event)->
-        event.stopPropagation()
-        self.stopAutoScroll()
-        self.nextSlide()
-
-        if typeof self.options.onNextClick == 'function'
-          self.options.onNextClick.apply(@, [event,self])
-
-      @$slider.on 'tap', 'span.prev', (event)->
-        event.stopPropagation()
-        self.stopAutoScroll()
-        self.prevSlide()
-
-        if typeof self.options.onPrevClick == 'function'
-          self.options.onPrevClick.apply(@, [event,self])
 
       @$slider.on 'tap', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
