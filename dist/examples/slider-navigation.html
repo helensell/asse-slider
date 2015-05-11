@@ -57,6 +57,9 @@
         <It>'s initialized hidden, which was particularly tricky to implement with iScroll,</It>
         <since>hidden iScroll elements initialize with zero slides.</since>
       </p>
+      <p>Also, the next/prev buttons are outside the slider element, given as selector options</p>
+      <button id="prev">Prev</button>
+      <button id="next">Next</button>
     </div>
     <link rel="stylesheet" href="./css/slider-navigation.css">
     <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
@@ -64,35 +67,29 @@
     <script type="text/javascript" src="../../bower_components/iscroll/build/iscroll.js"></script>
     <script type="text/javascript" src="../js/asse-slider.js"></script>
     <script type="text/javascript">
+      var mainSlider = $('.slider-navigationTarget').Slider({
+        index: 'navigationTarget',
+        navigation: ['index'],
+        carousel: 2,
+        nextButtonSelector: 'button#next',
+        prevButtonSelector: 'button#prev'
+      });
+      
       var navigation = $('.slider-navigation').Slider({
+        index: 'navigation',
         slideMargin: '6',
         slideWidth: '250',
         snap: '.inner',
         autoscroll: false,
         navigation: [],
         inactiveSlideOpacity: '0.3',
-        debug: false
+        carousel: 4,
+        debug: true
       });
       
-      var mainSlider = $('.slider-navigationTarget').Slider({
-        navigation: ['index',navigation],
-        carousel: 2
-      });
+      navigation.Slider('set', 'listenTo', 'navigationTarget')
+      mainSlider.Slider('set', 'listenTo', 'navigation')
       
-      navigation.Slider('set', 'onSlideClick', function(event,slider){
-        mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',$(event.currentTarget).index()+2);
-      });
-      
-      navigation.Slider('set', 'onNextClick', function(event,slider){
-        mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',slider.currentSlide+2);
-      });
-      
-      navigation.Slider('set', 'onPrevClick', function(event,slider){
-        mainSlider.Slider('stopAutoScroll');
-        mainSlider.Slider('goToSlide',slider.currentSlide+2);
-      });
       
       $('#hide-navigation').click(
         function(){

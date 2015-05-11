@@ -51,6 +51,11 @@
                               <span class="prev fa fa-angle-left"></span>
                               <span class="next fa fa-angle-right"></span>')
 
+      # If one of these variables is a jQuery selector, they are used instead
+      # of rendering the above template
+      prevButtonSelector: null
+      nextButtonSelector: null
+
       slideContainerSelector: '.slideContainer'
       slideSelector: 'ul.slides > li'
 
@@ -100,10 +105,9 @@
       @options = $.extend({}, @defaults, options)
 
       @$slider = $(el)
-      @$slider.data 'index', index
-      @$slider.addClass 'slider_'+index
+      @$slider.data 'index', if @options.index then 'slider_'+@options.index else 'slider_'+index
+      @$slider.addClass if @options.index then 'slider_'+@options.index else 'slider_'+index
       @$sliderNavigation = []
-      @$sliderListeners = []
       @$slidesInContainer = null
 
       @options.onSlideClick = (event)->
@@ -133,8 +137,7 @@
       if @options.autoscroll
         @startAutoScroll()
 
-      if @options.prevNextButtons
-        @addPrevNextButtons()
+      @addPrevNextButtons()
 
       if _.size(@options.navigation)
         @renderNavigation()
@@ -163,7 +166,50 @@
     # Add prev next buttons
     addPrevNextButtons: ->
 
-      @$slider.append @options.prevNextButtonsTemplate()
+      self = @
+
+      # Next event function
+      handleNextEvent = (event)->
+        event.stopPropagation()
+        self.stopAutoScroll()
+        self.nextSlide()
+
+        if typeof self.options.onNextClick == 'function'
+          self.options.onNextClick.apply(@, [event,self])
+
+      # Prev event function
+      handlePrevEvent = (event)->
+        event.stopPropagation()
+        self.stopAutoScroll()
+        self.prevSlide()
+
+        if typeof self.options.onPrevClick == 'function'
+          self.options.onPrevClick.apply(@, [event,self])
+
+      if @options.prevNextButtons
+
+        # Check if prev/next button selectors are set in options,
+        # and if so, use them instead of rendering template
+        if @options.prevButtonSelector or @options.nextButtonSelector
+
+          # We can't use the custom 'tap' event outside of the iScroll element
+          # Therefore we have to bind click and touchstart events both to
+          # the custom element
+          if @options.prevButtonSelector
+            $('body').on 'click', @options.prevButtonSelector, handlePrevEvent
+            $('body').on 'touchstart', @options.prevButtonSelector, handlePrevEvent
+
+          if @options.nextButtonSelector
+            $('body').on 'click', @options.nextButtonSelector, handleNextEvent
+            $('body').on 'touchstart', @options.nextButtonSelector, handleNextEvent
+
+        # No selectors set, render template
+        else
+
+          @$slider.append @options.prevNextButtonsTemplate()
+
+          @$slider.on 'tap', 'span.prev', handlePrevEvent
+          @$slider.on 'tap', 'span.next', handleNextEvent
 
 
     # Add navigation
@@ -191,10 +237,6 @@
           _.last(@$sliderNavigation).css
             'margin-left': -(_.last(@$sliderNavigation).width() / 2)
 
-        else if element.data('Slider')
-
-          self.registerListener element
-
         else if element instanceof jQuery
 
           @$sliderNavigation.push element
@@ -212,12 +254,6 @@
                 self.goToSlide $(@).data('item_index')
 
       @updateNavigation()
-
-
-    # Register listener
-    registerListener: (listener)->
-
-      @$sliderListeners.push listener
 
 
     # Update navigation status
@@ -285,16 +321,10 @@
       if @options.carousel
         # If last slide, return to first
         if @currentSlide >= @numberOfSlides-@options.carousel
-          @goToSlide @options.carousel, false
+          @goToSlide @options.carousel, false, false
         # If first slide, move to last
         else if @currentSlide < @options.carousel
-          @goToSlide @numberOfSlides - (@options.carousel+1), false
-
-      _.each @$sliderListeners, (listener)->
-
-        # Update remote slider
-        listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', self.currentSlide - self.options.carousel
+          @goToSlide @numberOfSlides - (@options.carousel+1), false, false
 
       @updateSlides()
       @updateNavigation()
@@ -364,34 +394,12 @@
         if typeof self.options.onSlideClick == 'function'
           self.options.onSlideClick.apply(@, [event,self])
 
-      @$slider.on 'tap', 'span.next', (event)->
-        event.stopPropagation()
-        self.stopAutoScroll()
-        self.nextSlide()
-
-        if typeof self.options.onNextClick == 'function'
-          self.options.onNextClick.apply(@, [event,self])
-
-      @$slider.on 'tap', 'span.prev', (event)->
-        event.stopPropagation()
-        self.stopAutoScroll()
-        self.prevSlide()
-
-        if typeof self.options.onPrevClick == 'function'
-          self.options.onPrevClick.apply(@, [event,self])
-
       @$slider.on 'tap', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
         self.goToSlide $(@).data('item_index')
 
       $(window).bind 'resize', ->
         self.resize()
-        ###
-        if @resizeTo
-          clearTimeout @resizeTimeout
-        @resizeTimeout = setTimeout ->
-        , 200
-        ###
 
 
     # Go to next slide
@@ -399,8 +407,8 @@
 
       self = @
 
-      if @numberOfSlides > (@currentSlide+1)
-        nextSlideIndex = (@currentSlide+1)
+      if @numberOfSlides > @currentSlide+1
+        nextSlideIndex = @currentSlide+1
       else
         nextSlideIndex = 0
 
@@ -421,7 +429,7 @@
 
 
     # Go to slide index
-    goToSlide: (index, animate=true)=>
+    goToSlide: (index, animate=true, triggerEvent=true)=>
 
       self = @
 
@@ -434,11 +442,8 @@
       @updateSlides(animate)
       @updateNavigation()
 
-      _.each @$sliderListeners, (listener)->
-
-        # Update remote slider
-        listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', index - self.options.carousel
+      if triggerEvent
+        $('body').trigger @$slider.data('index')+'#goToSlide', index - @options.carousel
 
       @debug()
 
@@ -464,6 +469,17 @@
 
       clearInterval @interval
       @interval = null
+
+
+    # Listen to another slider for navigation
+    # Pass the slider index for the event binding selector
+    listenTo: (index)->
+
+      self = @
+
+      $('body').on 'slider_'+index+'#goToSlide', (event, index)->
+        self.stopAutoScroll()
+        self.goToSlide (index + self.options.carousel), true, false
 
 
     # Add debug output to slider
@@ -509,6 +525,9 @@
 
       if option == 'navigation'
         @renderNavigation()
+
+      if option == 'listenTo'
+        @listenTo value
 
       @debug()
 
