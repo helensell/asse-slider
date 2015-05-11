@@ -197,11 +197,9 @@
           # the custom element
           if @options.prevButtonSelector
             $('body').on 'click', @options.prevButtonSelector, handlePrevEvent
-            $('body').on 'touchstart', @options.prevButtonSelector, handlePrevEvent
 
           if @options.nextButtonSelector
             $('body').on 'click', @options.nextButtonSelector, handleNextEvent
-            $('body').on 'touchstart', @options.nextButtonSelector, handleNextEvent
 
         # No selectors set, render template
         else
