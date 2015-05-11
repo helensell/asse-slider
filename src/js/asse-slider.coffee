@@ -105,10 +105,9 @@
       @options = $.extend({}, @defaults, options)
 
       @$slider = $(el)
-      @$slider.data 'index', index
-      @$slider.addClass 'slider_'+index
+      @$slider.data 'index', if @options.index then 'slider_'+@options.index else 'slider_'+index
+      @$slider.addClass if @options.index then 'slider_'+@options.index else 'slider_'+index
       @$sliderNavigation = []
-      @$sliderListeners = []
       @$slidesInContainer = null
 
       @options.onSlideClick = (event)->
@@ -238,10 +237,6 @@
           _.last(@$sliderNavigation).css
             'margin-left': -(_.last(@$sliderNavigation).width() / 2)
 
-        else if element.data('Slider')
-
-          self.registerListener element
-
         else if element instanceof jQuery
 
           @$sliderNavigation.push element
@@ -259,12 +254,6 @@
                 self.goToSlide $(@).data('item_index')
 
       @updateNavigation()
-
-
-    # Register listener
-    registerListener: (listener)->
-
-      @$sliderListeners.push listener
 
 
     # Update navigation status
@@ -332,16 +321,10 @@
       if @options.carousel
         # If last slide, return to first
         if @currentSlide >= @numberOfSlides-@options.carousel
-          @goToSlide @options.carousel, false
+          @goToSlide @options.carousel, false, false
         # If first slide, move to last
         else if @currentSlide < @options.carousel
-          @goToSlide @numberOfSlides - (@options.carousel+1), false
-
-      _.each @$sliderListeners, (listener)->
-
-        # Update remote slider
-        listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', self.currentSlide - self.options.carousel
+          @goToSlide @numberOfSlides - (@options.carousel+1), false, false
 
       @updateSlides()
       @updateNavigation()
@@ -424,8 +407,8 @@
 
       self = @
 
-      if @numberOfSlides > (@currentSlide+1)
-        nextSlideIndex = (@currentSlide+1)
+      if @numberOfSlides > @currentSlide+1
+        nextSlideIndex = @currentSlide+1
       else
         nextSlideIndex = 0
 
@@ -446,7 +429,7 @@
 
 
     # Go to slide index
-    goToSlide: (index, animate=true)=>
+    goToSlide: (index, animate=true, triggerEvent=true)=>
 
       self = @
 
@@ -459,11 +442,8 @@
       @updateSlides(animate)
       @updateNavigation()
 
-      _.each @$sliderListeners, (listener)->
-
-        # Update remote slider
-        listener.Slider 'stopAutoScroll'
-        listener.Slider 'goToSlide', index - self.options.carousel
+      if triggerEvent
+        $('body').trigger @$slider.data('index')+'#goToSlide', index - @options.carousel
 
       @debug()
 
@@ -489,6 +469,17 @@
 
       clearInterval @interval
       @interval = null
+
+
+    # Listen to another slider for navigation
+    # Pass the slider index for the event binding selector
+    listenTo: (index)->
+
+      self = @
+
+      $('body').on 'slider_'+index+'#goToSlide', (event, index)->
+        self.stopAutoScroll()
+        self.goToSlide (index + self.options.carousel), true, false
 
 
     # Add debug output to slider
@@ -534,6 +525,9 @@
 
       if option == 'navigation'
         @renderNavigation()
+
+      if option == 'listenTo'
+        @listenTo value
 
       @debug()
 
