@@ -324,7 +324,7 @@
           @goToSlide @options.carousel + (@currentSlide - (@numberOfSlides-@options.carousel)), false, false
         # If first slide, move to last
         else if @currentSlide < @options.carousel
-          @goToSlide @numberOfSlides - (@currentSlide - (@numberOfSlides-@options.carousel+1)), false, false
+          @goToSlide @numberOfSlides - (@options.carousel+1), false, false
 
       @updateSlides()
       @updateNavigation()
