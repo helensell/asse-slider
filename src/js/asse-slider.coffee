@@ -51,6 +51,11 @@
                               <span class="prev fa fa-angle-left"></span>
                               <span class="next fa fa-angle-right"></span>')
 
+      # If one of these variables is a jQuery selector, they are used instead
+      # of rendering the above template
+      prevButtonSelector: null
+      nextButtonSelector: null
+
       slideContainerSelector: '.slideContainer'
       slideSelector: 'ul.slides > li'
 
@@ -164,26 +169,48 @@
 
       self = @
 
+      # Next event function
+      handleNextEvent = (event)->
+        event.stopPropagation()
+        self.stopAutoScroll()
+        self.nextSlide()
+
+        if typeof self.options.onNextClick == 'function'
+          self.options.onNextClick.apply(@, [event,self])
+
+      # Prev event function
+      handlePrevEvent = (event)->
+        event.stopPropagation()
+        self.stopAutoScroll()
+        self.prevSlide()
+
+        if typeof self.options.onPrevClick == 'function'
+          self.options.onPrevClick.apply(@, [event,self])
+
       if @options.prevNextButtons
 
-        @$slider.append @options.prevNextButtonsTemplate()
+        # Check if prev/next button selectors are set in options,
+        # and if so, use them instead of rendering template
+        if @options.prevButtonSelector or @options.nextButtonSelector
 
-        @$slider.on 'tap', 'span.next', (event)->
-          event.stopPropagation()
-          self.stopAutoScroll()
-          self.nextSlide()
+          # We can't use the custom 'tap' event outside of the iScroll element
+          # Therefore we have to bind click and touchstart events both to
+          # the custom element
+          if @options.prevButtonSelector
+            $('body').on 'click', @options.prevButtonSelector, handlePrevEvent
+            $('body').on 'touchstart', @options.prevButtonSelector, handlePrevEvent
 
-          if typeof self.options.onNextClick == 'function'
-            self.options.onNextClick.apply(@, [event,self])
+          if @options.nextButtonSelector
+            $('body').on 'click', @options.nextButtonSelector, handleNextEvent
+            $('body').on 'touchstart', @options.nextButtonSelector, handleNextEvent
 
-        @$slider.on 'tap', 'span.prev', (event)->
-          event.stopPropagation()
-          self.stopAutoScroll()
-          self.prevSlide()
+        # No selectors set, render template
+        else
 
-          if typeof self.options.onPrevClick == 'function'
-            self.options.onPrevClick.apply(@, [event,self])
+          @$slider.append @options.prevNextButtonsTemplate()
 
+          @$slider.on 'tap', 'span.prev', handlePrevEvent
+          @$slider.on 'tap', 'span.next', handleNextEvent
 
 
     # Add navigation

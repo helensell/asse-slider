@@ -40,6 +40,10 @@ block content
     p This example shows using a second slider as a navigation element.
       It's initialized hidden, which was particularly tricky to implement with iScroll,
       since hidden iScroll elements initialize with zero slides.
+    p Also, the next/prev buttons are outside the slider element, given as selector options
+
+    button#prev Prev
+    button#next Next
 
   link(rel="stylesheet",href="./css/slider-navigation.css")
   script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
@@ -59,7 +63,9 @@ block content
 
     var mainSlider = $('.slider-navigationTarget').Slider({
       navigation: ['index',navigation],
-      carousel: 2
+      carousel: 2,
+      nextButtonSelector: 'button#next',
+      prevButtonSelector: 'button#prev'
     });
 
     navigation.Slider('set', 'onSlideClick', function(event,slider){
