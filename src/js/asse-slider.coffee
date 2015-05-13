@@ -75,6 +75,10 @@
       # Number indicates number of slides padding left and right
       carousel: 0
 
+      # Callback on slider initialization
+      onStart: (event)->
+        #console.log 'Start'
+
       # Slide click callback function
       onSlideClick: (event)->
         #console.log $(event.currentTarget).index()
@@ -149,6 +153,10 @@
       @goToSlide @currentSlide, false
       @bindEvents()
       @debug()
+
+      if typeof self.options.onStart == 'function'
+        self.options.onStart.apply(@, [event])
+
       @
 
 
