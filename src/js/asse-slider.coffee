@@ -85,6 +85,9 @@
       onPrevClick: (event)->
         #console.log 'Prev'
 
+      onScrollEnd: (event)->
+        #console.log 'End'
+
 
     debugTemplate: _.template('
       <div class="debug">
@@ -323,6 +326,9 @@
         # If first slide, move to last
         else if @currentSlide < @options.carousel
           @goToSlide @numberOfSlides - (@options.carousel+1), false, false
+
+      if typeof self.options.onScrollEnd == 'function'
+        self.options.onScrollEnd.apply(@, [event,self])
 
       @updateSlides()
       @updateNavigation()
