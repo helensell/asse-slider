@@ -55,7 +55,10 @@ block content
     var mainSlider = $('.slider-navigationTarget').Slider({
       index: 'navigationTarget',
       navigation: ['index'],
-      carousel: 2
+      carousel: 2,
+      onScrollEnd: function(){
+        console.log('Scroll ended');
+      }
       /*
       nextButtonSelector: 'button#next',
       prevButtonSelector: 'button#prev'
