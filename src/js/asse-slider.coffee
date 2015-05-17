@@ -314,7 +314,7 @@
 
 
     # Event callback on scroll end
-    onScrollEnd: =>
+    onScrollEnd: (event)=>
 
       self = @
 
