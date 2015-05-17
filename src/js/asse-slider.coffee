@@ -155,7 +155,7 @@
       @debug()
 
       if typeof self.options.onStart == 'function'
-        self.options.onStart.apply(@, [event])
+        self.options.onStart.apply(@, [])
 
       @
 
