@@ -124,7 +124,6 @@
       if @options.carousel
 
         if @options.carousel > @$slideContainer.find(@options.slideSelector).length
-          console.log @$slideContainer.find(@options.slideSelector).length
           @options.carousel = @$slideContainer.find(@options.slideSelector).length
 
         @addCarouselSlides()
