@@ -403,7 +403,7 @@
         event.stopPropagation()
         self.stopAutoScroll()
         if typeof self.options.onSlideClick == 'function'
-          self.options.onSlideClick.apply(@, [event,self])
+          self.options.onSlideClick.apply(self, [event])
 
       @$slider.on 'tap', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
