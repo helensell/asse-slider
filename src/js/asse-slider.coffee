@@ -257,8 +257,7 @@
               item.data 'slider_index', @$slider.data 'index'
               item.data 'item_index', index+parseInt(self.options.carousel)
               item.addClass 'slider_navigationItem'
-              item.on 'tap', (event)->
-                event.stopPropagation()
+              item.on 'click', (event)->
                 self.stopAutoScroll()
                 self.goToSlide $(@).data('item_index')
 
