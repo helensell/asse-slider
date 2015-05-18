@@ -81,6 +81,7 @@
 
       # Slide click callback function
       onSlideClick: (event)->
+        @goToSlide $(event.currentTarget).index()
         #console.log $(event.currentTarget).index()
 
       onNextClick: (event)->
@@ -117,13 +118,15 @@
       @$sliderNavigation = []
       @$slidesInContainer = null
 
-      @options.onSlideClick = (event)->
-        self.goToSlide $(event.currentTarget).index()
-
       @$slideContainer = @$slider.find @options.slideContainerSelector
       @refreshSlides()
 
       if @options.carousel
+
+        if @options.carousel > @$slideContainer.find(@options.slideSelector).length
+          console.log @$slideContainer.find(@options.slideSelector).length
+          @options.carousel = @$slideContainer.find(@options.slideSelector).length
+
         @addCarouselSlides()
         @refreshSlides()
         @currentSlide = @options.carousel
