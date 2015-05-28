@@ -422,7 +422,7 @@
 
       $(window).bind 'resize', (event)->
 
-        if typeof @options.onBeforeResize == 'function'
+        if typeof self.options.onBeforeResize == 'function'
           self.options.onBeforeResize.apply(@, [event])
 
         self.resize event
