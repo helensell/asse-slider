@@ -20,5 +20,10 @@ block content
   script(type="text/javascript",src="../../bower_components/jquery/dist/jquery.js")
   script(type="text/javascript",src="../../bower_components/iscroll/build/iscroll.js")
   script(type="text/javascript",src="../js/asse-slider.js")
-  script(type="text/javascript")
-    $('.slider').Slider();
+  script(type="text/javascript").
+    var slider = $('.slider').Slider({
+      onResize: function(event){
+        console.log('Resizing!');
+      }
+    });
+

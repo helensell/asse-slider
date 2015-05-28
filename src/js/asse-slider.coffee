@@ -93,6 +93,9 @@
       onScrollEnd: (event)->
         #console.log 'End'
 
+      onResize: (event)->
+        console.log 'Resize'
+
 
     debugTemplate: _.template('
       <div class="debug">
@@ -351,7 +354,7 @@
 
 
     # Resize slider
-    resize: =>
+    resize: (event)=>
 
       @stopAutoScroll()
 
@@ -391,6 +394,9 @@
       if @options.autoscroll
         @startAutoScroll()
 
+      if typeof @options.onResize == 'function'
+        @options.onResize.apply(@, [event])
+
 
     # Bind events
     bindEvents: ->
@@ -411,8 +417,8 @@
         self.stopAutoScroll()
         self.goToSlide $(@).data('item_index')
 
-      $(window).bind 'resize', ->
-        self.resize()
+      $(window).bind 'resize', (event)->
+        self.resize event
 
 
     # Go to next slide
