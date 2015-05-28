@@ -94,7 +94,7 @@
         #console.log 'End'
 
       onResize: (event)->
-        console.log 'Resize'
+        #console.log 'Resize'
 
 
     debugTemplate: _.template('
