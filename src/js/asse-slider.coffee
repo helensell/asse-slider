@@ -93,8 +93,11 @@
       onScrollEnd: (event)->
         #console.log 'End'
 
-      onResize: (event)->
-        #console.log 'Resize'
+      onBeforeResize: (event)->
+        #console.log 'Before Resize'
+
+      onAfterResize: (event)->
+        #console.log 'After Resize'
 
 
     debugTemplate: _.template('
@@ -394,8 +397,8 @@
       if @options.autoscroll
         @startAutoScroll()
 
-      if typeof @options.onResize == 'function'
-        @options.onResize.apply(@, [event])
+      if typeof @options.onAfterResize == 'function'
+        @options.onAfterResize.apply(@, [event])
 
 
     # Bind events
@@ -418,6 +421,10 @@
         self.goToSlide $(@).data('item_index')
 
       $(window).bind 'resize', (event)->
+
+        if typeof @options.onBeforeResize == 'function'
+          @options.onBeforeResize.apply(@, [event])
+
         self.resize event
 
 
