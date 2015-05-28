@@ -22,7 +22,7 @@ block content
   script(type="text/javascript",src="../js/asse-slider.js")
   script(type="text/javascript").
     var slider = $('.slider').Slider({
-      onResize: function(event){
+      onBeforeResize: function(event){
         console.log('Resizing!');
       }
     });
