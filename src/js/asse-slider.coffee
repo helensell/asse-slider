@@ -119,8 +119,8 @@
       @options = $.extend({}, @defaults, options)
 
       @$slider = $(el)
-      @$slider.data 'index', if @options.index then 'slider_'+@options.index else 'slider_'+index
-      @$slider.addClass if @options.index then 'slider_'+@options.index else 'slider_'+index
+      @$slider.data 'index', @getSliderIndex(index)
+      @$slider.addClass @getSliderIndex(index)
       @$sliderNavigation = []
       @$slidesInContainer = null
 
@@ -168,11 +168,27 @@
       @
 
 
+    # Get the uniqe slider index
+    # either set via options, by dom element id
+    # or numeric auto-increment id of slider instances
+    getSliderIndex: (index)->
+
+      idAttr = @$slider.attr 'id'
+
+      if @options.index
+        return 'slider_'+@options.index
+      else if typeof idAttr != typeof undefined && idAttr != false
+        return 'slider_'+idAttr
+      else
+        return 'slider_'+index
+
+
     # Refresh slides
     refreshSlides: ->
 
       @$slides = @$slideContainer.find @options.slideSelector
       @numberOfSlides = @$slides.length
+
 
     # Enable slides via CSS
     enableSlides: ->

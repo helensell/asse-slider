@@ -8,7 +8,7 @@
   </head>
   <body>
     <div style="margin:50px auto; width:800px; height:400px;" class="wrapper">
-      <div class="slider slider-navigationTarget">
+      <div id="navigationTarget" class="slider slider-navigationTarget">
         <div class="slideContainer">
           <ul class="slides">
             <li style="background-image:url('../../res/nin01.jpg')" class="slide"></li>
@@ -23,7 +23,7 @@
       </div>
     </div>
     <div style="margin:50px auto; width:800px; height:0px; overflow:hidden;" class="navigation-wrapper">
-      <div style="height: 200px;" class="slider slider-navigation">
+      <div id="navigation" style="height: 200px;" class="slider slider-navigation">
         <div class="slideContainer">
           <ul class="slides">
             <li class="slide">
@@ -68,7 +68,6 @@
     <script type="text/javascript" src="../js/asse-slider.js"></script>
     <script type="text/javascript">
       var mainSlider = $('.slider-navigationTarget').Slider({
-        index: 'navigationTarget',
         navigation: ['index'],
         carousel: 2,
         prevButtonSelector: 'button#prev',
@@ -79,7 +78,6 @@
       });
       
       var navigation = $('.slider-navigation').Slider({
-        index: 'navigation',
         slideMargin: '6',
         slideWidth: '250',
         snap: '.inner',

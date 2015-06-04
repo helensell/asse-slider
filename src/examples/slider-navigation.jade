@@ -5,7 +5,7 @@ block title
 
 block content
   .wrapper(style="margin:50px auto; width:800px; height:400px;")
-    .slider.slider-navigationTarget
+    #navigationTarget.slider.slider-navigationTarget
       .slideContainer
         ul.slides
           li.slide(style="background-image:url('../../res/nin01.jpg')")
@@ -17,7 +17,7 @@ block content
           li.slide(style="background-image:url('../../res/nin07.jpg')")
 
   .navigation-wrapper(style="margin:50px auto; width:800px; height:0px; overflow:hidden;")
-    .slider.slider-navigation(style="height: 200px;")
+    #navigation.slider.slider-navigation(style="height: 200px;")
       .slideContainer
         ul.slides
           li.slide
@@ -53,7 +53,6 @@ block content
   script(type="text/javascript").
 
     var mainSlider = $('.slider-navigationTarget').Slider({
-      index: 'navigationTarget',
       navigation: ['index'],
       carousel: 2,
       prevButtonSelector: 'button#prev',
@@ -64,7 +63,6 @@ block content
     });
 
     var navigation = $('.slider-navigation').Slider({
-      index: 'navigation',
       slideMargin: '6',
       slideWidth: '250',
       snap: '.inner',
