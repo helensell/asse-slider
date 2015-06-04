@@ -42,8 +42,8 @@ block content
       since hidden iScroll elements initialize with zero slides.
     p Also, the next/prev buttons are outside the slider element, given as selector options
 
-    button#prev Prev
-    button#next Next
+    button#prev(data-slider-prev="slider_navigationTarget") Prev
+    button#next(data-slider-next="slider_navigationTarget") Next
 
   link(rel="stylesheet",href="./css/slider-navigation.css")
   script(type="text/javascript",src="../../bower_components/underscore/underscore.js")
@@ -56,13 +56,11 @@ block content
       index: 'navigationTarget',
       navigation: ['index'],
       carousel: 2,
+      prevButtonSelector: 'button#prev',
+      nextButtonSelector: 'button#next',
       onScrollEnd: function(){
         console.log('Scroll ended');
       }
-      /*
-      nextButtonSelector: 'button#next',
-      prevButtonSelector: 'button#prev'
-      */
     });
 
     var navigation = $('.slider-navigation').Slider({
