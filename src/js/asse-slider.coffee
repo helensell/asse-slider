@@ -174,7 +174,6 @@
       @$slides = @$slideContainer.find @options.slideSelector
       @numberOfSlides = @$slides.length
 
-
     # Enable slides via CSS
     enableSlides: ->
 
@@ -205,28 +204,21 @@
         if typeof self.options.onPrevClick == 'function'
           self.options.onPrevClick.apply(@, [event,self])
 
+      # We can't use the custom 'tap' event outside of the iScroll element
+      # Therefore we have to bind the click event to the custom element
+      if @options.prevButtonSelector
+        $(@options.prevButtonSelector+'[data-slider-prev='+self.$slider.data('index')+']').on 'click', handlePrevEvent
+
+      if @options.nextButtonSelector
+        $(@options.nextButtonSelector+'[data-slider-next='+self.$slider.data('index')+']').on 'click', handleNextEvent
+
+      # If prevNextButtons option is set, add the buttons template to the page
       if @options.prevNextButtons
 
-        # Check if prev/next button selectors are set in options,
-        # and if so, use them instead of rendering template
-        if @options.prevButtonSelector or @options.nextButtonSelector
+        @$slider.append @options.prevNextButtonsTemplate()
 
-          # We can't use the custom 'tap' event outside of the iScroll element
-          # Therefore we have to bind click and touchstart events both to
-          # the custom element
-          if @options.prevButtonSelector
-            $('body').on 'click', @options.prevButtonSelector, handlePrevEvent
-
-          if @options.nextButtonSelector
-            $('body').on 'click', @options.nextButtonSelector, handleNextEvent
-
-        # No selectors set, render template
-        else
-
-          @$slider.append @options.prevNextButtonsTemplate()
-
-          @$slider.on 'tap', 'span.prev', handlePrevEvent
-          @$slider.on 'tap', 'span.next', handleNextEvent
+        @$slider.on 'tap', 'span.prev', handlePrevEvent
+        @$slider.on 'tap', 'span.next', handleNextEvent
 
 
     # Add navigation
