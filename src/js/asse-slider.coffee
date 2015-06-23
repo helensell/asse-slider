@@ -144,7 +144,7 @@
         scrollY: false
         snap: @options.snap
         snapSpeed: 400
-        tap: true
+        tap: false
         momentum: false
         eventPassthrough: true
         preventDefault: false
@@ -211,6 +211,9 @@
         if typeof self.options.onNextClick == 'function'
           self.options.onNextClick.apply(@, [event,self])
 
+        # Return false
+        false
+
       # Prev event function
       handlePrevEvent = (event)->
         event.stopPropagation()
@@ -219,6 +222,9 @@
 
         if typeof self.options.onPrevClick == 'function'
           self.options.onPrevClick.apply(@, [event,self])
+
+        # Return false
+        false
 
       # We can't use the custom 'tap' event outside of the iScroll element
       # Therefore we have to bind the click event to the custom element
@@ -233,8 +239,8 @@
 
         @$slider.append @options.prevNextButtonsTemplate()
 
-        @$slider.on 'tap', 'span.prev', handlePrevEvent
-        @$slider.on 'tap', 'span.next', handleNextEvent
+        @$slider.on 'click', 'span.prev', handlePrevEvent
+        @$slider.on 'click', 'span.next', handleNextEvent
 
 
     # Add navigation
@@ -418,13 +424,13 @@
 
       @iScroll.on 'beforeScrollStart', @onBeforeScrollStart
 
-      @$slides.on 'tap', (event)->
+      @$slides.on 'click', (event)->
         event.stopPropagation()
         self.stopAutoScroll()
         if typeof self.options.onSlideClick == 'function'
           self.options.onSlideClick.apply(self, [event])
 
-      @$slider.on 'tap', 'ul.sliderNavigation li', ->
+      @$slider.on 'click', 'ul.sliderNavigation li', ->
         self.stopAutoScroll()
         self.goToSlide $(@).data('item_index')
 
